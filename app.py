@@ -1,3 +1,5 @@
+import os
+
 # from typing_extensions import Required
 from flask import Flask 
 from flask_restful import Api
@@ -9,9 +11,12 @@ from resources.user import UserRegister
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 
+data_uri = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+if data_uri.startswith("postgres://"):
+    data_uri = data_uri.replace("postgres://", "postgresql://", 1)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = data_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'me'
 api = Api(app)
